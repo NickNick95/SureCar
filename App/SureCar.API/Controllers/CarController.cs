@@ -5,7 +5,7 @@ namespace SureCar.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CarController : ControllerBase
+    public class CarController : Controller
     {
         [HttpGet]
         public async Task<IActionResult> GetOne()

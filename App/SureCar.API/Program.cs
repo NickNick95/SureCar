@@ -1,4 +1,5 @@
 using SureCar.API;
+using SureCar.API.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,16 +18,8 @@ var configuration = new ConfigurationBuilder()
 Registry.BuildServices(builder.Services, configuration);
 
 IServiceProvider provider = builder.Services.BuildServiceProvider();
-
-try
-{
-    DatabaseStartup.PrepareDatabaseIfNotExists(provider);
-}
-catch (Exception ex)
-{
-    Console.WriteLine(ex);
-}
-
+var databaseStartupService = provider.GetService<DatabaseManager>();
+databaseStartupService.PrepareDatabaseIfNotExists();
 
 var app = builder.Build();
 

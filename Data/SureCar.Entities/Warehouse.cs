@@ -10,10 +10,12 @@ namespace SureCar.Entities
         public int Id { get; set; }
         public string Name { get; set; }
 
-        [ForeignKey("Locations")]
-        public Location Locations { get; set; }
+        public int LocationId { get; set; }
+        [ForeignKey("LocationId")]
+        public Location Location { get; set; }
 
+        public int CarId { get; set; }
         [ForeignKey("CarId")]
-        public Car Cars { get; set; }
+        public Car Car { get; set; }
     }
 }

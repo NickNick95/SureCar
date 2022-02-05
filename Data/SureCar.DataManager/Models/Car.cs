@@ -1,4 +1,4 @@
-﻿namespace SureCar.DataManager.Models
+﻿namespace SureCar.DataManagers.Models
 {
     /// <summary>
     /// The Car model
@@ -12,6 +12,6 @@
         /// <summary>
         /// The Vehicles
         /// </summary>
-        public List<Vehicle> vehicles { get; set; }
+        public List<Vehicle> Vehicles { get; set; }
     }
 }

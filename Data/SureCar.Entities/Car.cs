@@ -9,8 +9,6 @@ namespace SureCar.Entities
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string Location { get; set; }
-
-        [ForeignKey("Vehicles")]
         public ICollection<Vehicle> Vehicles { get; set; }
     }
 }

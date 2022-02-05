@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace SureCar.DataManager.Models
+namespace SureCar.DataManagers.Models
 {
     /// <summary>
     /// The Location model

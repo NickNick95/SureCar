@@ -11,8 +11,13 @@ namespace SureCar.Entities
         public string Make { get; set; }
         public string Model { get; set; }
         public int YearModel { get; set; }
+        [Column(TypeName = "decimal(18,4)")]
         public decimal Price { get; set; }
         public bool Licensed { get; set; }
         public string DateAdded { get; set; }
+
+        public int CarId { get; set; }
+        [ForeignKey("CarId")]
+        public Car Car { get; set; }
     }
 }

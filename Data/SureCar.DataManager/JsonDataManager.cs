@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using SureCar.Common.Interface.DataManager;
 
-namespace SureCar.DataManager
+namespace SureCar.DataManagers
 {
     /// <summary>
     /// JSON data manager is a public class that is used to parse data from JSON files to model.

@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SureCar.DataManager.Models
+namespace SureCar.DataManagers.Models
 {
     /// <summary>
     /// The Vehicle model
@@ -10,7 +11,7 @@ namespace SureCar.DataManager.Models
         /// <summary>
         /// The Id
         /// </summary>
-        [JsonProperty("_id")]
+        [NotMapped]
         public int Id { get; set; }
         /// <summary>
         /// The Make
@@ -37,6 +38,6 @@ namespace SureCar.DataManager.Models
         /// The Date added
         /// </summary>
         [JsonProperty("date_added")]
-        public string DateAdded { get; set; }
+        public DateTime DateAdded { get; set; }
     }
 }

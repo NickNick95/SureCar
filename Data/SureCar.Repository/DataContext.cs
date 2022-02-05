@@ -1,13 +1,13 @@
-﻿using SureCar.Entities;
-using System.Data.Entity;
-using System.Data.Entity.ModelConfiguration.Conventions;
+﻿using Microsoft.EntityFrameworkCore;
+using SureCar.Entities;
 
 namespace SureCar.Repositories
 {
     public class DataContext: DbContext
     {
+        public DataContext() { }
 
-        public DataContext(string connString) : base(connString)
+        public DataContext(DbContextOptions options) : base(options)
         {
         }
 
@@ -16,9 +16,17 @@ namespace SureCar.Repositories
         public DbSet<Vehicle> Vehicles { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
 
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
+            if (!options.IsConfigured)
+            {
+                options.UseSqlServer("DefaultConnection");
+            }
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

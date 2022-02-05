@@ -7,11 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="11.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Common\SureCar.Common\SureCar.Common.csproj" />
+    <ProjectReference Include="..\..\Common\SureCar.Common\SureCar.Common.csproj" />
   </ItemGroup>
 
 </Project>

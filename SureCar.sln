@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{FE24C8
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SureCar.Common", "Common\SureCar.Common\SureCar.Common.csproj", "{E280DF6E-0B22-4E3F-9515-8E32B95FDE2B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SureCar.Domain.Services", "BusinessLogic\SureCar.Domain.Services\SureCar.Domain.Services.csproj", "{56E3D5BD-6996-4525-AC49-7D3835B58F97}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SureCar.Services", "BusinessLogic\SureCar.Domain.Services\SureCar.Services.csproj", "{56E3D5BD-6996-4525-AC49-7D3835B58F97}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SureCar.Entities", "Data\SureCar.Entities\SureCar.Entities.csproj", "{F5F693EC-92B4-49D4-8321-3609D889FEB8}"
 EndProject
@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SureCar.Tests", "Tests\Sure
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SureCar.API", "App\SureCar.API\SureCar.API.csproj", "{F7259698-60B6-4FAD-A2F5-B5AA1B04931B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SureCar.DataManager", "SureCar.DataManager\SureCar.DataManager.csproj", "{D43A4047-56EC-49C8-A65F-83A1C4C53418}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SureCar.DataManagers", "Data\SureCar.DataManager\SureCar.DataManagers.csproj", "{3EFFB552-8436-4294-87DF-4C53283AB481}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,10 +57,10 @@ Global
 		{F7259698-60B6-4FAD-A2F5-B5AA1B04931B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F7259698-60B6-4FAD-A2F5-B5AA1B04931B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F7259698-60B6-4FAD-A2F5-B5AA1B04931B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D43A4047-56EC-49C8-A65F-83A1C4C53418}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D43A4047-56EC-49C8-A65F-83A1C4C53418}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D43A4047-56EC-49C8-A65F-83A1C4C53418}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D43A4047-56EC-49C8-A65F-83A1C4C53418}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3EFFB552-8436-4294-87DF-4C53283AB481}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EFFB552-8436-4294-87DF-4C53283AB481}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EFFB552-8436-4294-87DF-4C53283AB481}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EFFB552-8436-4294-87DF-4C53283AB481}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -72,7 +72,7 @@ Global
 		{C68C71F7-ADB2-4FB9-B98A-4A28140DAAEB} = {7C578772-B15C-4CFE-B786-B468BCF19109}
 		{25CB10B5-4E55-4105-AFE9-0D09B7D42B85} = {07DB2E8D-74AD-4A7B-9891-1975C4BCB229}
 		{F7259698-60B6-4FAD-A2F5-B5AA1B04931B} = {2F2C0215-6405-4076-9630-F9CEC8AD80E2}
-		{D43A4047-56EC-49C8-A65F-83A1C4C53418} = {7C578772-B15C-4CFE-B786-B468BCF19109}
+		{3EFFB552-8436-4294-87DF-4C53283AB481} = {7C578772-B15C-4CFE-B786-B468BCF19109}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1AB98AE7-BA57-48C3-9655-EC920161A20A}

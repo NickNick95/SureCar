@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SureCar.DataManager.Models
+namespace SureCar.DataManagers.Models
 {
     /// <summary>
     /// The Warehouse model
@@ -10,7 +11,7 @@ namespace SureCar.DataManager.Models
         /// <summary>
         /// The Id
         /// </summary>
-        [JsonProperty("_id")]
+        [NotMapped]
         public string Id { get; set; }
         /// <summary>
         /// The Name

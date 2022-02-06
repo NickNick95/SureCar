@@ -11,11 +11,11 @@ namespace SureCar.DataManagers.Models
         /// The Latitude
         /// </summary>
         [JsonProperty("lat")]
-        public string Latitude { get; set; }
+        public double Latitude { get; set; }
         /// <summary>
         /// The Longitude
         /// </summary>
         [JsonProperty("long")]
-        public string Longitude { get; set; }
+        public double Longitude { get; set; }
     }
 }

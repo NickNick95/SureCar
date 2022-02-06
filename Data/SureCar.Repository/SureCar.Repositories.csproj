@@ -24,7 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\SureCar.DataManager\SureCar.DataManagers.csproj" />
     <ProjectReference Include="..\SureCar.Entities\SureCar.Entities.csproj" />
   </ItemGroup>
 

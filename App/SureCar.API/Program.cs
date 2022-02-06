@@ -21,6 +21,11 @@ IServiceProvider provider = builder.Services.BuildServiceProvider();
 var databaseStartupService = provider.GetService<DatabaseManager>();
 databaseStartupService.PrepareDatabaseIfNotExists();
 
+builder.Services.AddMvc(options =>
+{
+    options.RespectBrowserAcceptHeader = true;
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -29,6 +34,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors(x => x
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
 
 app.UseHttpsRedirection();
 

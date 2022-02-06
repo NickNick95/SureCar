@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateRuntimeConfigurationFiles>True</GenerateRuntimeConfigurationFiles>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\BusinessLogic\SureCar.Domain.Services\SureCar.Services.csproj" />
+    <ProjectReference Include="..\..\Common\SureCar.Common\SureCar.Common.csproj" />
+    <ProjectReference Include="..\..\Data\SureCar.DataManager\SureCar.DataManagers.csproj" />
+    <ProjectReference Include="..\..\Data\SureCar.Repository\SureCar.Repositories.csproj" />
+  </ItemGroup>
+
+</Project>

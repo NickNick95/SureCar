@@ -21,7 +21,7 @@ namespace SureCar.API.Controllers
         [ProducesResponseType(typeof(List<Warehouse>), 200)]
         public IActionResult GetAll()
         {
-            var result = _warehouseService.GetAll().ToList();
+            var result = _warehouseService.GetAll();
 
             return Json(new ResponseResult<List<Warehouse>>
             {

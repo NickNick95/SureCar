@@ -29,8 +29,12 @@ namespace SureCar.Services
         public List<Warehouse> GetAll()
         {
             var data = _warehouseRepository.GetAll();
-            var warehouses = _mapper.Map<List<Warehouse>>(data);
+            List<Warehouse> warehouses = _mapper.Map<List<Warehouse>>(data);
 
+            foreach (var warehouse in warehouses)
+            {
+                warehouse.Car.Vehicles.Sort((x, y) => x.DateAdded.CompareTo(y.DateAdded));
+            }
             return warehouses;
         }
     }

@@ -25,6 +25,7 @@ namespace SureCar.API.Controllers
 
             return Json(new ResponseResult<List<Warehouse>>
             {
+                IsSuccessful = true,
                 Content = result
             });
         }

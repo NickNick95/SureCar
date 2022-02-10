@@ -8,11 +8,11 @@ namespace SureCar.Services
 {
     public class WherehouseService : IWarehouseService
     {
-        private readonly IMapper _mapper;
         private readonly IWarehouseRepository _warehouseRepository;
+        private readonly IMapper _mapper;
 
-        public WherehouseService(IMapper mapper,
-            IWarehouseRepository warehouseRepository)
+        public WherehouseService(IWarehouseRepository warehouseRepository,
+            IMapper mapper)
         {
             _mapper = mapper;
             _warehouseRepository = warehouseRepository;

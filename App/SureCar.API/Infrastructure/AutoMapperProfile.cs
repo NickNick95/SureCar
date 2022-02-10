@@ -3,6 +3,10 @@ using entitieModels = SureCar.Entities;
 using jsonModels = SureCar.DataManagers.Models;
 using serviceModels = SureCar.Services.Models;
 
+using serviceModel = SureCar.Services.Models;
+using SureCar.API.Models.User;
+using SureCar.Repositories;
+
 namespace SureCar.API.Infrastructure
 {
     public class AutoMapperProfile : Profile
@@ -31,6 +35,14 @@ namespace SureCar.API.Infrastructure
                 .ReverseMap();
             CreateMap<jsonModels.Location, serviceModels.Location>().ReverseMap();
             CreateMap<jsonModels.Vehicle, serviceModels.Vehicle>().ReverseMap();
+
+            CreateMap<serviceModel.UserLogin, UserLogin>().ReverseMap();
+
+            CreateMap<ApplicationUser, serviceModel.User>()
+                .ForMember(x => x.UserName, x => x.MapFrom(z => z.UserName))
+                .ForMember(x => x.Email, x => x.MapFrom(z => z.Email))
+                .ForMember(x => x.Id, x => x.MapFrom(z => z.Id))
+                .ReverseMap();
         }
     }
 }

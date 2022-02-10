@@ -1,14 +1,7 @@
-using SureCar.API;
 using SureCar.API.Infrastructure;
+using SureCar.Services.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 var configuration = new ConfigurationBuilder()
                .SetBasePath(Directory.GetCurrentDirectory())
@@ -18,13 +11,8 @@ var configuration = new ConfigurationBuilder()
 Registry.BuildServices(builder.Services, configuration);
 
 IServiceProvider provider = builder.Services.BuildServiceProvider();
-var databaseStartupService = provider.GetService<DatabaseManager>();
-databaseStartupService.PrepareDatabaseIfNotExists();
-
-builder.Services.AddMvc(options =>
-{
-    options.RespectBrowserAcceptHeader = true;
-});
+var databaseStartupService = provider.GetService<IDatabaseService>();
+await databaseStartupService.PrepareDatabaseIfNotExists();
 
 var app = builder.Build();
 
@@ -35,14 +23,18 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors(x => x
-            .AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader());
+app.UseCors("CorsPolicy");
+
+//app.UseCors(x => x
+//            .AllowAnyOrigin()
+//            .AllowAnyMethod()
+//            .AllowAnyHeader());
 
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseAuthentication();
 
 app.MapControllers();
 

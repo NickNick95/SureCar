@@ -1,39 +1,44 @@
 ﻿using AutoMapper;
-using SureCar.Repositories;
-using SureCar.DataManagers.Models;
 using SureCar.Common.Interface.DataManager;
+using SureCar.DataManagers.Models;
+using SureCar.Repositories;
 using SureCar.Services.Interface;
 using serviceModels = SureCar.Services.Models;
 
-namespace SureCar.API
+namespace SureCar.Services
 {
-    public class DatabaseManager
+    public class DatabaseService : IDatabaseService
     {
+
         private const string _fileName = "warehouses.json";
 
         private readonly IMapper _mapper;
         private readonly DataContext _context;
+        private readonly IUserService _userService;
         private readonly IJsonDataManager _jsonDataManager;
         private readonly IWarehouseService _warehouseService;
 
-        public DatabaseManager(IMapper mapper,
+        public DatabaseService(IMapper mapper,
             DataContext context,
+            IUserService userService,
             IJsonDataManager jsonDataManager,
             IWarehouseService warehouseService)
         {
             _mapper = mapper;
             _context = context;
+            _userService = userService;
             _jsonDataManager = jsonDataManager;
             _warehouseService = warehouseService;
         }
 
-        public void PrepareDatabaseIfNotExists()
+        public async Task PrepareDatabaseIfNotExists()
         {
-            if (_context.Database.EnsureCreated())
+            if (!_context.Warehouses.Any())
             {
+                await _userService.InitializeBaseAdminAsync();
                 var data = GetDefaultData();
                 var warehouses = _mapper.Map<List<serviceModels.Warehouse>>(data);
-                 _warehouseService.AddAll(warehouses);
+                _warehouseService.AddAll(warehouses);
             }
         }
 

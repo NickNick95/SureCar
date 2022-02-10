@@ -1,26 +1,21 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SureCar.Entities;
 
 namespace SureCar.Repositories
 {
-    public class DataContext: DbContext
+    public class DataContext : IdentityDbContext<ApplicationUser>
     {
+
         public DataContext() { }
 
-        public DataContext(DbContextOptions options) : base(options)
-        {
-        }
-
-        public DbSet<Car> Cars { get; set; }
-        public DbSet<Location> Locations { get; set; }
-        public DbSet<Vehicle> Vehicles { get; set; }
-        public DbSet<Warehouse> Warehouses { get; set; }
+        public DataContext(DbContextOptions options) : base(options) { }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             if (!options.IsConfigured)
             {
-                options.UseSqlServer("DefaultConnection");
+                options.UseSqlServer("Server=.\\SQLEXPRESS;Database=SureCar;User Id=sa;Password=Qwerty!23456;MultipleActiveResultSets=True");
             }
         }
 
@@ -28,5 +23,10 @@ namespace SureCar.Repositories
         {
             base.OnModelCreating(modelBuilder);
         }
+
+        public DbSet<Car> Cars { get; set; }
+        public DbSet<Location> Locations { get; set; }
+        public DbSet<Vehicle> Vehicles { get; set; }
+        public DbSet<Warehouse> Warehouses { get; set; }
     }
 }

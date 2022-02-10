@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 
 namespace SureCar.Tests
 {
@@ -8,6 +9,10 @@ namespace SureCar.Tests
         [TestMethod]
         public void TestMethod1()
         {
+
+          //  var a = new Mock()
         }
+
+        public void Test1() { }
     }
 }

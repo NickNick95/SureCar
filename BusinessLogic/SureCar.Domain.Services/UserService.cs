@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using SureCar.Repositories;
+using SureCar.Entities;
 using SureCar.Services.Interface;
 using SureCar.Services.Models;
 using System.IdentityModel.Tokens.Jwt;
@@ -22,7 +22,6 @@ namespace SureCar.Services
 
         private const string _loginProvider = "userProvider";
         private const string _tokenName = "jwtToken";
-        private const string _defRole = "admin";
 
         public UserService(UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
@@ -39,7 +38,8 @@ namespace SureCar.Services
 
         public async Task InitializeBaseAdminAsync()
         {
-            IdentityResult result = await _roleManager.CreateAsync(new IdentityRole(_defRole));
+            await _roleManager.CreateAsync(new IdentityRole(UserRole.User));
+            IdentityResult result = await _roleManager.CreateAsync(new IdentityRole(UserRole.Administrator));
 
             if (result.Succeeded)
             {
@@ -59,7 +59,7 @@ namespace SureCar.Services
                 {
                     ApplicationUser userExist = await _userManager.FindByNameAsync(user.UserName);
                     if (userExist != null)
-                        await _userManager.AddToRoleAsync(user, _defRole);
+                        await _userManager.AddToRoleAsync(user, UserRole.Administrator);
                 }
                 else
                 {
@@ -73,7 +73,7 @@ namespace SureCar.Services
         {
             if (await _userManager.CheckPasswordAsync(user, password))
             {
-                var toke = GetToken(user);
+                var toke = await GetToken(user);
 
                 var identityResult = await _userManager.SetAuthenticationTokenAsync(user, _loginProvider, _tokenName, toke);
 
@@ -91,7 +91,7 @@ namespace SureCar.Services
 
         public async Task LogoutAsync(ApplicationUser user)
         {
-              await _userManager.RemoveAuthenticationTokenAsync(user, _loginProvider, _tokenName);
+            await _userManager.RemoveAuthenticationTokenAsync(user, _loginProvider, _tokenName);
         }
 
         public async Task<ApplicationUser?> GetUserByNameAsync(string userName)
@@ -108,12 +108,18 @@ namespace SureCar.Services
             return user == null ? null : user;
         }
 
-        public async Task<bool> CreateUserAsync(UserLogin user)
+        public async Task<bool> CreateUserAsync(User user)
         {
             var applicationUser = _mapper.Map<ApplicationUser>(user);
+           // applicationUser.Id = Guid.NewGuid().ToString();
             var identityResult = await _userManager.CreateAsync(applicationUser, user.Password);
-            if (!identityResult.Succeeded)
+            if (identityResult.Succeeded)
+            {
+                ApplicationUser userExist = await _userManager.FindByNameAsync(user.UserName);
+                await _userManager.AddToRoleAsync(userExist, UserRole.User);
+
                 return true;
+            }
             else
             {
                 _logger.LogInformation("Cannot create user");
@@ -123,9 +129,8 @@ namespace SureCar.Services
             }
         }
 
-        private String GetToken(IdentityUser user)
+        private async Task<String> GetToken(ApplicationUser user)
         {
-
             //List<Claim> claims = new List<Claim>
             //{
             //    new Claim(ClaimTypes.Name, user.UserName),
@@ -142,17 +147,24 @@ namespace SureCar.Services
             //    expires: DateTime.Now.AddDays(1),
             //    signingCredentials: creds);
 
-           // var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+            // var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
             var utcNow = DateTime.UtcNow;
+            //var role = _userManager.getR
 
-            var claims = new Claim[]
+            var claims = new List<Claim>()
             {
                         new Claim(JwtRegisteredClaimNames.Sub, user.Id),
                         new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                         new Claim(JwtRegisteredClaimNames.Iat, utcNow.ToString())
             };
+
+            var roles = await _userManager.GetRolesAsync(user);
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
 
             var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetValue<String>("Tokens:Key")));
             var signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);

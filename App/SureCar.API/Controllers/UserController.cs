@@ -27,7 +27,7 @@ namespace SureCar.API.Controllers
         [HttpPost("Registration")]
         public async Task<IActionResult> RegisterUser([FromBody] UserForRegistration model)
         {
-            var user = _mapper.Map<serviceModel.UserLogin>(model);
+            var user = _mapper.Map<serviceModel.User>(model);
             var result = await _userService.CreateUserAsync(user);
 
             var response = new ResponseResult<ResponseMessage>();
@@ -78,7 +78,7 @@ namespace SureCar.API.Controllers
         }
 
         [HttpPost("logout")]
-        [Authorize(AuthenticationSchemes = "Bearer")]
+        [Authorize]
         public async Task<IActionResult> Logout([FromBody] UserLogout userLogout)
         {
             if (string.IsNullOrEmpty(userLogout.UserId))

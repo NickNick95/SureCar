@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SureCar.Common.Interface.DataManager;
 using SureCar.DataManagers;
+using SureCar.Entities;
 using SureCar.Repositories;
 using SureCar.Repositories.Implementions;
 using SureCar.Repositories.Interfaces;
@@ -57,8 +58,10 @@ namespace SureCar.API.Infrastructure
             services.AddSingleton(new MapperConfiguration(mc => mc.AddProfile(new AutoMapperProfile())).CreateMapper());
 
             #region Transients
+           
             services.AddTransient<DbContext, DataContext>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IOrderService, OrderService>();
             services.AddTransient<IJsonDataManager, JsonDataManager>();
             services.AddTransient<IDatabaseService, DatabaseService>();
             services.AddTransient<IWarehouseService, WherehouseService>();
@@ -69,8 +72,11 @@ namespace SureCar.API.Infrastructure
 
             #region Add Authentication
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                 .AddJwtBearer(options =>
+            services.AddAuthentication(opt =>
+            {
+                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
                  {
                      options.TokenValidationParameters = new TokenValidationParameters
                      {
@@ -82,6 +88,6 @@ namespace SureCar.API.Infrastructure
                      };
                  });
             #endregion
-        }
+            }
     }
 }

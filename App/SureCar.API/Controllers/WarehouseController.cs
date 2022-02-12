@@ -1,29 +1,29 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SureCar.API.Models.Response;
 using SureCar.Services.Interface;
-using SureCar.Services.Models;
+using serviceModel = SureCar.Services.Models;
 
 namespace SureCar.API.Controllers
 {
     [Route("api/[controller]")]
     [Produces("application/json")]
     [ApiController]
-    public class WarehouseController : Controller
+    public class WarehouseController : ControllerBase
     {
-
         private readonly IWarehouseService _warehouseService;
+
         public WarehouseController(IWarehouseService warehouseService)
         {
             _warehouseService = warehouseService;
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(List<Warehouse>), 200)]
+        [ProducesResponseType(typeof(List<serviceModel.Warehouse>), 200)]
         public IActionResult GetAll()
         {
             var result = _warehouseService.GetAll();
 
-            return Json(new ResponseResult<List<Warehouse>>
+            return Ok(new ResponseResult<List<serviceModel.Warehouse>>
             {
                 IsSuccessful = true,
                 Content = result

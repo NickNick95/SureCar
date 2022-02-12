@@ -1,5 +1,5 @@
 ﻿using SureCar.Entities;
-using SureCar.Services.Models;
+using SureCar.Services.Models.UserModels;
 
 namespace SureCar.Services.Interface
 {
@@ -7,9 +7,10 @@ namespace SureCar.Services.Interface
     {
         Task InitializeBaseAdminAsync();
         Task<bool> CreateUserAsync(User user);
-        Task<string> LoginAsync(ApplicationUser user, string password);
-        Task LogoutAsync(ApplicationUser user);
-        Task<ApplicationUser> GetUserByNameAsync(string userName);
-        Task<ApplicationUser> GetUserByIdAsync(string id);
+        Task<UserLoginResult?> LoginAsync(UserLogin user);
+        Task LogoutAsync(User user);
+        Task<User> GetUserByNameAsync(string userName);
+        Task<User> GetUserByIdAsync(string id);
+        Task<bool> IsUserAdmin(User user);
     }
 }

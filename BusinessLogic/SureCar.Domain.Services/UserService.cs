@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using SureCar.Entities;
 using SureCar.Services.Interface;
-using SureCar.Services.Models;
+using SureCar.Services.Models.UserModels;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -38,8 +38,8 @@ namespace SureCar.Services
 
         public async Task InitializeBaseAdminAsync()
         {
-            await _roleManager.CreateAsync(new IdentityRole(UserRole.User));
-            IdentityResult result = await _roleManager.CreateAsync(new IdentityRole(UserRole.Administrator));
+            await _roleManager.CreateAsync(new IdentityRole(UserRoles.User));
+            IdentityResult result = await _roleManager.CreateAsync(new IdentityRole(UserRoles.Administrator));
 
             if (result.Succeeded)
             {
@@ -59,7 +59,7 @@ namespace SureCar.Services
                 {
                     ApplicationUser userExist = await _userManager.FindByNameAsync(user.UserName);
                     if (userExist != null)
-                        await _userManager.AddToRoleAsync(user, UserRole.Administrator);
+                        await _userManager.AddToRoleAsync(user, UserRoles.Administrator);
                 }
                 else
                 {
@@ -69,16 +69,27 @@ namespace SureCar.Services
             }
         }
 
-        public async Task<string> LoginAsync(ApplicationUser user, string password)
+        public async Task<UserLoginResult?> LoginAsync(UserLogin user)
         {
-            if (await _userManager.CheckPasswordAsync(user, password))
-            {
-                var toke = await GetToken(user);
+            var applicationUser = await _userManager.FindByNameAsync(user.UserName);
 
-                var identityResult = await _userManager.SetAuthenticationTokenAsync(user, _loginProvider, _tokenName, toke);
+            var login = await _userManager.CheckPasswordAsync(applicationUser, user.Password);
+
+            if (login)
+            {
+                var token = await GetToken(applicationUser);
+
+                var identityResult = await _userManager
+                    .SetAuthenticationTokenAsync(applicationUser, _loginProvider, _tokenName, token);
 
                 if (identityResult.Succeeded)
-                    return toke;
+                {
+                    var result = new UserLoginResult();
+                    result.User = _mapper.Map<User>(applicationUser);
+                    result.Token = token;
+
+                    return result;
+                }
                 else
                 {
                     _logger.LogInformation("Cannot login user");
@@ -86,37 +97,60 @@ namespace SureCar.Services
                 }
             }
 
-            return string.Empty;
+            return null;
         }
 
-        public async Task LogoutAsync(ApplicationUser user)
+        public async Task LogoutAsync(User user)
         {
-            await _userManager.RemoveAuthenticationTokenAsync(user, _loginProvider, _tokenName);
+            var applicationUser = await _userManager.FindByNameAsync(user.UserName);
+
+            await _userManager.RemoveAuthenticationTokenAsync(applicationUser, _loginProvider, _tokenName);
         }
 
-        public async Task<ApplicationUser?> GetUserByNameAsync(string userName)
+        public async Task<User?> GetUserByNameAsync(string userName)
         {
             ApplicationUser? user = await _userManager.FindByNameAsync(userName);
 
-            return user == null ? null : user;
+            if (user == null)
+                return null;
+            else 
+                return _mapper.Map<User>(user);
         }
 
-        public async Task<ApplicationUser?> GetUserByIdAsync(string id)
+        public async Task<bool> IsUserAdmin(User user)
+        {
+            var applicationUser = _mapper.Map<ApplicationUser>(user);
+            var isAdmin = await _userManager.IsInRoleAsync(applicationUser, UserRoles.Administrator);
+
+            return isAdmin;
+        }
+
+        public async Task<User?> GetUserByIdAsync(string id)
         {
             ApplicationUser? user = await _userManager.FindByIdAsync(id);
 
-            return user == null ? null : user;
+            if (user == null)
+                return null;
+            else
+                return _mapper.Map<User>(user);
+        }
+
+        public async Task<List<string>> GetRoleByUser(User user)
+        {
+            var applicationUser = _mapper.Map<ApplicationUser>(user);
+            var roles = await _userManager.GetRolesAsync(applicationUser) as List<string>;
+
+            return roles;
         }
 
         public async Task<bool> CreateUserAsync(User user)
         {
             var applicationUser = _mapper.Map<ApplicationUser>(user);
-           // applicationUser.Id = Guid.NewGuid().ToString();
             var identityResult = await _userManager.CreateAsync(applicationUser, user.Password);
             if (identityResult.Succeeded)
             {
                 ApplicationUser userExist = await _userManager.FindByNameAsync(user.UserName);
-                await _userManager.AddToRoleAsync(userExist, UserRole.User);
+                await _userManager.AddToRoleAsync(userExist, UserRoles.User);
 
                 return true;
             }
@@ -131,26 +165,7 @@ namespace SureCar.Services
 
         private async Task<String> GetToken(ApplicationUser user)
         {
-            //List<Claim> claims = new List<Claim>
-            //{
-            //    new Claim(ClaimTypes.Name, user.UserName),
-            //    new Claim(ClaimTypes.Role, "Admin")
-            //};
-
-            //var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
-            //    _configuration.GetSection("AppSettings:Token").Value));
-
-            //var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-
-            //var token = new JwtSecurityToken(
-            //    claims: claims,
-            //    expires: DateTime.Now.AddDays(1),
-            //    signingCredentials: creds);
-
-            // var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-
             var utcNow = DateTime.UtcNow;
-            //var role = _userManager.getR
 
             var claims = new List<Claim>()
             {
@@ -163,7 +178,8 @@ namespace SureCar.Services
             var roles = await _userManager.GetRolesAsync(user);
             foreach (var role in roles)
             {
-                claims.Add(new Claim(ClaimTypes.Role, role));
+                if (!string.IsNullOrEmpty(role))
+                    claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
             var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetValue<String>("Tokens:Key")));

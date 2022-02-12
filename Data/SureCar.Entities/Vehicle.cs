@@ -16,6 +16,6 @@ namespace SureCar.Entities
         public bool Licensed { get; set; }
         public string DateAdded { get; set; }
 
-        public List<VehicleOrder> VehicleOrders { get; set; }
+        public ICollection<VehicleOrder> VehicleOrders { get; set; }
     }
 }

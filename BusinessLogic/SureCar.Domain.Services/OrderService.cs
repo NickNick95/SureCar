@@ -3,32 +3,52 @@ using SureCar.Repositories.Interfaces;
 using SureCar.Services.Interface;
 using SureCar.Services.Models;
 using entitieModel = SureCar.Entities;
+using orderModel = SureCar.Services.Models.OrderModel;
 
 namespace SureCar.Services
 {
     public class OrderService : IOrderService
     {
-        private readonly IRepository<entitieModel.Order> _orderRepository;
+        private readonly IOrderRepository _orderRepository;
+        private readonly IRepository<entitieModel.VehicleOrder> _vehicleOrderRepository;
         private readonly IMapper _mapper;
 
-        public OrderService(IRepository<entitieModel.Order> orderRepository,
+        public OrderService(IOrderRepository orderRepository,
+            IRepository<entitieModel.VehicleOrder> vehicleOrderRepository,
             IMapper mapper)
         {
             _orderRepository = orderRepository;
             _mapper = mapper;
+            _vehicleOrderRepository = vehicleOrderRepository;
         }
 
-
-        public bool CreateOrder(Order order)
+        public int? CreateOrder(Order order)
         {
-            var entity = _mapper.Map<entitieModel.Order>(order);
+            var entity = new entitieModel.Order()
+            { 
+                OrderCreatedDate = DateTime.Now,
+                UserId = order.UserId
+            };
+
             if (entity != null)
             {
-                _orderRepository.Create(entity);
-                return true;
+                var existOrder = _orderRepository.Create(entity);
+
+                foreach (var id in order.VehicleIds)
+                {
+                    var vehicleOrder = new entitieModel.VehicleOrder
+                    {
+                        OrderId = existOrder.Id,
+                        VehicleId = id
+                    };
+
+                    _vehicleOrderRepository.Create(vehicleOrder);
+                }
+
+                return existOrder.Id;
             }
 
-            return false;
+            return null;
         }
 
         public List<Order> GetOrdersByUserId(string userId)
@@ -37,6 +57,15 @@ namespace SureCar.Services
             var orders =  _mapper.Map<List<Order>>(entitiList);
 
             return orders;
+        }
+
+        public List<orderModel.OrderDetails> GetAll()
+        {
+            var entityList = _orderRepository.GetAll();
+
+            var result = _mapper.Map<List<orderModel.OrderDetails>>(entityList);
+
+            return result;
         }
     }
 }

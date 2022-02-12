@@ -11,7 +11,7 @@ namespace SureCar.Entities
         public string UserId { get; set; }
         [ForeignKey("UserId")]
         public ApplicationUser User { get; set; }
-        public List<VehicleOrder> VehicleOrders { get; set; }
+        public ICollection<VehicleOrder> VehicleOrders { get; set; }
         public DateTime OrderCreatedDate { get; set; }
     }
 }

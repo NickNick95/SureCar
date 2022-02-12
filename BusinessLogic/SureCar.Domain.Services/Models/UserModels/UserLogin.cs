@@ -1,4 +1,4 @@
-﻿namespace SureCar.Services.Models
+﻿namespace SureCar.Services.Models.UserModels
 {
     public class UserLogin
     {

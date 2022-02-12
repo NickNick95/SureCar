@@ -62,6 +62,7 @@ namespace SureCar.API.Infrastructure
             services.AddTransient<DbContext, DataContext>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IOrderService, OrderService>();
+            services.AddTransient<IOrderRepository, OrderRepository>();
             services.AddTransient<IJsonDataManager, JsonDataManager>();
             services.AddTransient<IDatabaseService, DatabaseService>();
             services.AddTransient<IWarehouseService, WherehouseService>();

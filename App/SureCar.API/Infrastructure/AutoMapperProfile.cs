@@ -5,6 +5,7 @@ using entitieModels = SureCar.Entities;
 using jsonModels = SureCar.DataManagers.Models;
 using serviceModel = SureCar.Services.Models;
 using apiModel = SureCar.API.Models;
+using userModel = SureCar.Services.Models.UserModels;
 
 namespace SureCar.API.Infrastructure
 {
@@ -35,9 +36,9 @@ namespace SureCar.API.Infrastructure
             CreateMap<jsonModels.Location, serviceModel.Location>().ReverseMap();
             CreateMap<jsonModels.Vehicle, serviceModel.Vehicle>().ReverseMap();
 
-            CreateMap<serviceModel.UserLogin, UserLogin>().ReverseMap();
+            CreateMap<userModel.UserLogin, UserLogin>().ReverseMap();
 
-            CreateMap<ApplicationUser, serviceModel.User>()
+            CreateMap<ApplicationUser, userModel.User>()
                 .ForMember(x => x.UserName, x => x.MapFrom(z => z.UserName))
                 .ForMember(x => x.Email, x => x.MapFrom(z => z.Email))
                 .ForMember(x => x.Id, x => x.MapFrom(z => z.Id))
@@ -46,7 +47,7 @@ namespace SureCar.API.Infrastructure
                 .ForMember(x => x.LastName, x => x.MapFrom(z => z.LastName))
                 .ReverseMap();
 
-            CreateMap<UserForRegistration, serviceModel.User>()
+            CreateMap<UserForRegistration, userModel.User>()
                 .ForMember(x => x.UserName, x => x.MapFrom(z => z.UserName))
                 .ForMember(x => x.Email, x => x.MapFrom(z => z.Email))
                 .ForMember(x => x.PhoneNumber, x => x.MapFrom(z => z.PhoneNumber))
@@ -54,7 +55,19 @@ namespace SureCar.API.Infrastructure
                 .ForMember(x => x.LastName, x => x.MapFrom(z => z.LastName))
                 .ReverseMap();
 
-            CreateMap<serviceModel.Order, entitieModels.Order>().ReverseMap();
+            CreateMap<entitieModels.VehicleOrder, serviceModel.Vehicle>()
+                .IncludeMembers(x => x, z => z.Vehicle)
+                .ReverseMap();
+
+            CreateMap<serviceModel.OrderModel.OrderDetails, entitieModels.Order>()
+                .ForMember(x => x.Id, x => x.MapFrom(z => z.Id))
+                .ForMember(x => x.UserId, x => x.MapFrom(z => z.UserId))
+                .ForPath(x => x.User.UserName, x => x.MapFrom(z => z.UserName))
+                .ForPath(x => x.User.Email, x => x.MapFrom(z => z.Email))
+                .ForPath(x => x.User.PhoneNumber, x => x.MapFrom(z => z.PhoneNumber))
+                .ForPath(x => x.VehicleOrders, x => x.MapFrom(z => z.Vehicles))
+                .ReverseMap();
+
             CreateMap<apiModel.Order.Order, serviceModel.Order>().ReverseMap();
         }
     }

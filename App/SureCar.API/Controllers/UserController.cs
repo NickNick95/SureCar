@@ -4,9 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using SureCar.API.Models.Response;
 using SureCar.API.Models.User;
 using SureCar.Services.Interface;
-using SureCar.Services.Models;
-using serviceModel = SureCar.Services.Models;
 using apiModels = SureCar.API.Models.User;
+using userModel = SureCar.Services.Models.UserModels;
 
 namespace SureCar.API.Controllers
 {
@@ -24,10 +23,26 @@ namespace SureCar.API.Controllers
             _userService = userService;
         }
 
+        [HttpGet("isadmin/{userId}")]
+        public async Task<IActionResult> CheckIsAdministratorUser([FromRoute] string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+                return BadRequest("User id is required");
+
+            var user = await _userService.GetUserByIdAsync(userId);
+            var result = await _userService.IsUserAdmin(user);
+
+            return Ok(new ResponseResult<ResponseFlag>()
+            {
+                IsSuccessful = true,
+                Content = new ResponseFlag(result)
+            });
+        }
+
         [HttpPost("Registration")]
         public async Task<IActionResult> RegisterUser([FromBody] UserForRegistration model)
         {
-            var user = _mapper.Map<serviceModel.User>(model);
+            var user = _mapper.Map<userModel.User>(model);
             var result = await _userService.CreateUserAsync(user);
 
             var response = new ResponseResult<ResponseMessage>();
@@ -43,6 +58,7 @@ namespace SureCar.API.Controllers
             {
                 response.Content = new ResponseMessage("Failded");
                 response.IsSuccessful = false;
+
                 return BadRequest(response);
             }
         }
@@ -50,30 +66,21 @@ namespace SureCar.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] apiModels.UserLogin model)
         {
-            var userLogin = _mapper.Map<serviceModel.UserLogin>(model);
+            var userLogin = _mapper.Map<userModel.UserLogin>(model);
 
-            var applicationUser = await _userService.GetUserByNameAsync(userLogin.UserName);
-            if (applicationUser == null)
-                return Unauthorized(new ResponseResult<ResponseMessage> {
-                    IsSuccessful = false,
-                    ErrorMessage = "The account is not found",
-                });
+            var result = await _userService.LoginAsync(userLogin);
 
-            var token = await _userService.LoginAsync(applicationUser, userLogin.Password);
-
-            if (string.IsNullOrEmpty(token))
+            if (result == null)
                 return Unauthorized(new ResponseResult<ResponseMessage>
                 {
                     IsSuccessful = false,
                     ErrorMessage = "The account has a problem. Contact administrator to get more details",
                 });
 
-            var user = _mapper.Map<serviceModel.User>(applicationUser);
-
-            return Ok(new ResponseResult<User>()
+            return Ok(new ResponseResult<userModel.User>()
             {
-                Token = token,
-                Content = user
+                Token = result.Token,
+                Content = result.User
             });
         }
 

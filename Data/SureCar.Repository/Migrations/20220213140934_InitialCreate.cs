@@ -259,9 +259,7 @@ namespace SureCar.Repositories.Migrations
                 columns: table => new
                 {
                     OrderId = table.Column<int>(type: "int", nullable: false),
-                    VehicleId = table.Column<int>(type: "int", nullable: false),
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1")
+                    VehicleId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

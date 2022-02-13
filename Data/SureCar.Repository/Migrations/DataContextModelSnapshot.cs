@@ -158,6 +158,7 @@ namespace SureCar.Repositories.Migrations
             modelBuilder.Entity("SureCar.Entities.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")
@@ -332,12 +333,6 @@ namespace SureCar.Repositories.Migrations
 
                     b.Property<int>("VehicleId")
                         .HasColumnType("int");
-
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.HasKey("OrderId", "VehicleId");
 

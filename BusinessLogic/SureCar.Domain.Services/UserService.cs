@@ -129,6 +129,8 @@ namespace SureCar.Services
             {
                 _logger.LogInformation("Cannot logout user");
                 LogError(identityResult.Errors.ToList());
+
+                return false;
             }
         }
 

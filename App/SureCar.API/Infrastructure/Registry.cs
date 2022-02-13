@@ -51,12 +51,14 @@ namespace SureCar.API.Infrastructure
                 options.OperationFilter<SecurityRequirementsOperationFilter>();
             });
 
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
             services.AddDbContext<DataContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+
             services.AddIdentity<ApplicationUser, IdentityRole>()
                     .AddEntityFrameworkStores<DataContext>();
 
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton(new MapperConfiguration(mc => mc.AddProfile(new AutoMapperProfile())).CreateMapper());
 
             #region Transients

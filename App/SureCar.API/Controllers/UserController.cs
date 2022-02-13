@@ -60,7 +60,7 @@ namespace SureCar.API.Controllers
                 response.Errors = _userService.GetErrors();
                 response.IsSuccessful = false;
 
-                return BadRequest(response);
+                return Ok(response);
             }
         }
 

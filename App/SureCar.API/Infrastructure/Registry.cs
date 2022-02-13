@@ -12,7 +12,9 @@ using SureCar.Repositories;
 using SureCar.Repositories.Implementions;
 using SureCar.Repositories.Interfaces;
 using SureCar.Services;
+using SureCar.Services.Helpers;
 using SureCar.Services.Interface;
+using SureCar.Services.Interface.Helpers;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 
@@ -60,6 +62,7 @@ namespace SureCar.API.Infrastructure
             #region Transients
            
             services.AddTransient<DbContext, DataContext>();
+            services.AddTransient<ICryptoHelper, CryptoHelper>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IOrderService, OrderService>();
             services.AddTransient<IOrderRepository, OrderRepository>();

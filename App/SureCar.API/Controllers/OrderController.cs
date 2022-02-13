@@ -14,7 +14,7 @@ namespace SureCar.API.Controllers
     [ApiController]
     public class OrderController : ControllerBase
     {
-        public IOrderService _orderService;
+        private readonly IOrderService _orderService;
         private readonly IMapper _mapper;
 
         public OrderController(IOrderService orderService,

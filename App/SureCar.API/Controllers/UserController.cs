@@ -79,6 +79,7 @@ namespace SureCar.API.Controllers
 
             return Ok(new ResponseResult<userModel.User>()
             {
+                IsSuccessful = true,
                 Token = result.Token,
                 Content = result.User
             });

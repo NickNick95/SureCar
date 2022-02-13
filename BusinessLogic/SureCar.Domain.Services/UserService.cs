@@ -4,7 +4,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using SureCar.Entities;
+using SureCar.Services.Helpers;
 using SureCar.Services.Interface;
+using SureCar.Services.Interface.Helpers;
 using SureCar.Services.Models.UserModels;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -20,6 +22,8 @@ namespace SureCar.Services
         private readonly ILogger<UserService> _logger;
         private readonly IMapper _mapper;
 
+        private readonly ICryptoHelper _cryptoHelper;
+
         private const string _loginProvider = "userProvider";
         private const string _tokenName = "jwtToken";
 
@@ -27,13 +31,16 @@ namespace SureCar.Services
             RoleManager<IdentityRole> roleManager,
             IConfiguration configuration,
             ILogger<UserService> logger,
-            IMapper mapper)
+            IMapper mapper,
+            ICryptoHelper cryptoHelper)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _configuration = configuration;
             _logger = logger;
             _mapper = mapper;
+
+            _cryptoHelper = cryptoHelper;
         }
 
         public async Task InitializeBaseAdminAsync()
@@ -73,7 +80,9 @@ namespace SureCar.Services
         {
             var applicationUser = await _userManager.FindByNameAsync(user.UserName);
 
-            var login = await _userManager.CheckPasswordAsync(applicationUser, user.Password);
+            var password = _cryptoHelper.Decrypt(user.Password);
+
+            var login = await _userManager.CheckPasswordAsync(applicationUser, password);
 
             if (login)
             {

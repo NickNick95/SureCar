@@ -8,9 +8,10 @@ namespace SureCar.Services.Interface
         Task InitializeBaseAdminAsync();
         Task<bool> CreateUserAsync(User user);
         Task<UserLoginResult?> LoginAsync(UserLogin user);
-        Task LogoutAsync(User user);
+        Task<bool> LogoutAsync(User user);
         Task<User> GetUserByNameAsync(string userName);
         Task<User> GetUserByIdAsync(string id);
         Task<bool> IsUserAdmin(User user);
+        List<string> GetErrors();
     }
 }

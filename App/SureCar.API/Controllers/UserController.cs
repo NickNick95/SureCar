@@ -57,6 +57,7 @@ namespace SureCar.API.Controllers
             else
             {
                 response.Content = new ResponseMessage("Failded");
+                response.Errors = _userService.GetErrors();
                 response.IsSuccessful = false;
 
                 return BadRequest(response);
@@ -71,10 +72,10 @@ namespace SureCar.API.Controllers
             var result = await _userService.LoginAsync(userLogin);
 
             if (result == null)
-                return Unauthorized(new ResponseResult<ResponseMessage>
+                return Ok(new ResponseResult<userModel.User>
                 {
                     IsSuccessful = false,
-                    ErrorMessage = "The account has a problem. Contact administrator to get more details",
+                    Errors = _userService.GetErrors()
                 });
 
             return Ok(new ResponseResult<userModel.User>()
@@ -94,18 +95,25 @@ namespace SureCar.API.Controllers
 
             var user = await _userService.GetUserByIdAsync(userLogout.UserId);
             if (user == null)
-                return NotFound(new ResponseResult<ResponseMessage>
+                return Ok(new ResponseResult<ResponseMessage>
                 {
                     IsSuccessful = false,
                     ErrorMessage = "The account is not found",
                 });
 
-            await _userService.LogoutAsync(user);
+            var result = await _userService.LogoutAsync(user);
 
-            return Ok(new ResponseResult<ResponseMessage>
-            {
-                IsSuccessful = true
-            }); ;
+            if (result)
+                return Ok(new ResponseResult<ResponseMessage>
+                {
+                    IsSuccessful = false,
+                    Errors = _userService.GetErrors()
+                });
+            else
+                return Ok(new ResponseResult<ResponseMessage>
+                {
+                    IsSuccessful = true
+                }); ;
         }
     }
 }

@@ -44,7 +44,7 @@ namespace SureCar.API.Controllers
                 response.Content = new ResponseMessage("Failded");
                 response.IsSuccessful = false;
 
-                return BadRequest(response);
+                return Ok(response);
             }
         }
 

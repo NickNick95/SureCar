@@ -9,17 +9,17 @@ namespace SureCar.Services
 {
     public class OrderService : IOrderService
     {
-        private readonly IOrderRepository _orderRepository;
         private readonly IRepository<entitieModel.VehicleOrder> _vehicleOrderRepository;
+        private readonly IOrderRepository _orderRepository;
         private readonly IMapper _mapper;
 
-        public OrderService(IOrderRepository orderRepository,
-            IRepository<entitieModel.VehicleOrder> vehicleOrderRepository,
+        public OrderService(IRepository<entitieModel.VehicleOrder> vehicleOrderRepository,
+            IOrderRepository orderRepository,
             IMapper mapper)
         {
+            _vehicleOrderRepository = vehicleOrderRepository;
             _orderRepository = orderRepository;
             _mapper = mapper;
-            _vehicleOrderRepository = vehicleOrderRepository;
         }
 
         public int? CreateOrder(Order order)

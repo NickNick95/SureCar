@@ -27,20 +27,22 @@ namespace SureCar.Services
         private const string _loginProvider = "userProvider";
         private const string _tokenName = "jwtToken";
 
+        private List<string> _errorList;
+
         public UserService(UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
             IConfiguration configuration,
             ILogger<UserService> logger,
-            IMapper mapper,
-            ICryptoHelper cryptoHelper)
+            ICryptoHelper cryptoHelper,
+            IMapper mapper)
         {
-            _userManager = userManager;
-            _roleManager = roleManager;
-            _configuration = configuration;
             _logger = logger;
             _mapper = mapper;
-
+            _userManager = userManager;
+            _roleManager = roleManager;
             _cryptoHelper = cryptoHelper;
+            _configuration = configuration;
+            _errorList = new List<string>();
         }
 
         public async Task InitializeBaseAdminAsync()
@@ -80,11 +82,17 @@ namespace SureCar.Services
         {
             var applicationUser = await _userManager.FindByNameAsync(user.UserName);
 
+            if (applicationUser == null)
+            {
+                _logger.LogInformation("User name is invalid");
+                _errorList.Add("User name is invalid");
+
+                return null;
+            }
+
             var password = _cryptoHelper.Decrypt(user.Password);
-
-            var login = await _userManager.CheckPasswordAsync(applicationUser, password);
-
-            if (login)
+            var isPasswordCorrect = await _userManager.CheckPasswordAsync(applicationUser, password);
+            if (isPasswordCorrect)
             {
                 var token = await GetToken(applicationUser);
 
@@ -105,15 +113,23 @@ namespace SureCar.Services
                     LogError(identityResult.Errors.ToList());
                 }
             }
+            _errorList.Add("Password is invalid");
 
             return null;
         }
 
-        public async Task LogoutAsync(User user)
+        public async Task<bool> LogoutAsync(User user)
         {
             var applicationUser = await _userManager.FindByNameAsync(user.UserName);
 
-            await _userManager.RemoveAuthenticationTokenAsync(applicationUser, _loginProvider, _tokenName);
+            var identityResult = await _userManager.RemoveAuthenticationTokenAsync(applicationUser, _loginProvider, _tokenName);
+            if (identityResult.Succeeded)
+                return true;
+            else
+            {
+                _logger.LogInformation("Cannot logout user");
+                LogError(identityResult.Errors.ToList());
+            }
         }
 
         public async Task<User?> GetUserByNameAsync(string userName)
@@ -172,6 +188,11 @@ namespace SureCar.Services
             }
         }
 
+        public List<string> GetErrors()
+        {
+            return _errorList;
+        }
+
         private async Task<String> GetToken(ApplicationUser user)
         {
             var utcNow = DateTime.UtcNow;
@@ -210,7 +231,9 @@ namespace SureCar.Services
         {
             foreach (var error in errors)
             {
-                _logger.LogInformation($"Code: {error.Code}, Description: {error.Description}");
+                var message = $"Code: {error.Code}, Description: {error.Description}";
+                _logger.LogInformation(message);
+                _errorList.Add(message);
             }
         }
 

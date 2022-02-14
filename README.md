@@ -2,7 +2,7 @@
 
 This project was generated with [.Net 6](https://docs.microsoft.com/en-us/dotnet/core/whats-new/dotnet-6#:~:text=Better%20performance%3A%20.,tools%2C%20and%20better%20team%20collaboration.)
 
-Database: [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
+Database: [MS SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
 
 How to run: 
 1. Create database `SureCar`. You can check it on `appsettings.json` file.

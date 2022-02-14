@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using SureCar.API.Infrastructure;
 using SureCar.Services.Interface;
 

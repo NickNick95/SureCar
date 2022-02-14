@@ -9,6 +9,9 @@ using userModel = SureCar.Services.Models.UserModels;
 
 namespace SureCar.API.Controllers
 {
+    /// <summary>
+    /// Controller for user operations
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -16,6 +19,11 @@ namespace SureCar.API.Controllers
         private readonly IMapper _mapper;
         private readonly IUserService _userService;
 
+        /// <summary>
+        /// Base constructor for controller
+        /// </summary>
+        /// <param name="mapper">The mapper</param>
+        /// <param name="userService">The user service</param>
         public UserController(IMapper mapper,
             IUserService userService)
         {
@@ -23,6 +31,11 @@ namespace SureCar.API.Controllers
             _userService = userService;
         }
 
+        /// <summary>
+        /// Checks is administrator user
+        /// </summary>
+        /// <param name="userId">The user id</param>
+        /// <returns>The User Id</returns>
         [HttpGet("isadmin/{userId}")]
         public async Task<IActionResult> CheckIsAdministratorUser([FromRoute] string userId)
         {
@@ -39,6 +52,11 @@ namespace SureCar.API.Controllers
             });
         }
 
+        /// <summary>
+        /// Registers new User
+        /// </summary>
+        /// <param name="model">The user for registration</param>
+        /// <returns>Result of operation</returns>
         [HttpPost("Registration")]
         public async Task<IActionResult> RegisterUser([FromBody] UserForRegistration model)
         {
@@ -64,6 +82,11 @@ namespace SureCar.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Logins existing user
+        /// </summary>
+        /// <param name="model">The user login model</param>
+        /// <returns>Jwt token</returns>
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] apiModels.UserLogin model)
         {
@@ -86,6 +109,11 @@ namespace SureCar.API.Controllers
             });
         }
 
+        /// <summary>
+        /// Logouts existing user
+        /// </summary>
+        /// <param name="userLogout">The user logout model</param>
+        /// <returns>Result of operation</returns>
         [HttpPost("logout")]
         [Authorize]
         public async Task<IActionResult> Logout([FromBody] UserLogout userLogout)
@@ -103,7 +131,7 @@ namespace SureCar.API.Controllers
 
             var result = await _userService.LogoutAsync(user);
 
-            if (result)
+            if (!result)
                 return Ok(new ResponseResult<ResponseMessage>
                 {
                     IsSuccessful = false,

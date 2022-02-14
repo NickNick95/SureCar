@@ -10,6 +10,9 @@ using userModel = SureCar.Services.Models.UserModels;
 
 namespace SureCar.API.Controllers
 {
+    /// <summary>
+    /// Controller for making orders
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class OrderController : ControllerBase
@@ -17,6 +20,11 @@ namespace SureCar.API.Controllers
         private readonly IOrderService _orderService;
         private readonly IMapper _mapper;
 
+        /// <summary>
+        /// Base constructor for controller
+        /// </summary>
+        /// <param name="orderService"></param>
+        /// <param name="mapper"></param>
         public OrderController(IOrderService orderService,
             IMapper mapper)
         {
@@ -24,6 +32,11 @@ namespace SureCar.API.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Creates order
+        /// </summary>
+        /// <param name="model">The Order model</param>
+        /// <returns>Result of operation</returns>
         [HttpPost]
         [Authorize]
         public IActionResult CreateOrder([FromBody] Order model)
@@ -48,6 +61,10 @@ namespace SureCar.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Gets orders
+        /// </summary>
+        /// <returns>List of order details</returns>
         [HttpGet]
         [Authorize(Roles = userModel.UserRoles.Administrator)]
         public IActionResult GetOrders()

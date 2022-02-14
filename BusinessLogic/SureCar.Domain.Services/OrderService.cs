@@ -31,7 +31,7 @@ namespace SureCar.Services
             };
 
             if (entity != null 
-                && string.IsNullOrEmpty(entity.UserId)
+                && !string.IsNullOrEmpty(entity.UserId)
                 && order.VehicleIds.Count > 0)
             {
                 var existOrder = _orderRepository.Create(entity);

@@ -11,11 +11,16 @@ namespace SureCar.Repositories
 
         public DataContext(DbContextOptions options) : base(options) { }
 
+
+        /// <summary>
+        /// Added this method only for database migrations
+        /// </summary>
+        /// <param name="options"></param>
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             if (!options.IsConfigured)
             {
-                options.UseSqlServer("Server=.\\SQLEXPRESS;Database=SureCar;User Id=sa;Password=Qwerty!23456;MultipleActiveResultSets=True");
+                options.UseSqlServer("Server=.\\SQLEXPRESS;Database=SureCar;Trusted_Connection=True;MultipleActiveResultSets=True");
             }
         }
 

@@ -14,11 +14,14 @@ namespace SureCar.Repositories.Implementions
             _dbSet = context.Set<TEntity>();
         }
 
-        public void Create(TEntity entity)
+        public TEntity Create(TEntity entity)
         {
-            _context.Set<TEntity>().Add(entity);
+            var result = _context.Set<TEntity>().Add(entity);
             _context.SaveChanges();
+
+            return result.Entity;
         }
+
         public TEntity FindById(int id)
         {
             return _dbSet.Find(id);

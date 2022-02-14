@@ -16,8 +16,6 @@ namespace SureCar.Entities
         public bool Licensed { get; set; }
         public string DateAdded { get; set; }
 
-        public int CarId { get; set; }
-        [ForeignKey("CarId")]
-        public Car Car { get; set; }
+        public ICollection<VehicleOrder> VehicleOrders { get; set; }
     }
 }
